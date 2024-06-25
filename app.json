@@ -21,7 +21,7 @@
 				"backgroundColor": "#ffffff"
 			},
 			"package": "com.converty.notif",
-			"googleServiceFile": "pushnotiftestconverty-firebase-adminsdk-z4xzp-7e90a9695c.json"
+			"googleServicesFile": "pushnotiftestconverty-firebase-adminsdk-z4xzp-7e90a9695c.json"
 		},
 		"web": {
 			"bundler": "metro",
