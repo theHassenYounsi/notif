@@ -50,6 +50,11 @@ async function registerForPushNotificationsAsync() {
 			vibrationPattern: [0, 250, 250, 250],
 			lightColor: "#FF231F7C",
 		});
+		Notifications.setNotificationChannelAsync("Success", {
+			name: "success",
+			importance: Notifications.AndroidImportance.HIGH,
+			sound: "success.wav", // <- for Android 8.0+, see channelId property below
+		});
 	}
 
 	if (Device.isDevice) {
@@ -85,6 +90,24 @@ async function registerForPushNotificationsAsync() {
 		}
 	} else {
 		handleRegistrationError("Must use physical device for push notifications");
+	}
+}
+
+async function buttonSuccessNotification() {
+	try {
+		await Notifications.scheduleNotificationAsync({
+			content: {
+				title: "You've got mail! 📬",
+				body: "Open the notification to read them all",
+				sound: "success.wav", // <- for Android below 8.0
+			},
+			trigger: {
+				seconds: 5,
+				channelId: "default", // <- for Android 8.0+, see definition above
+			},
+		});
+	} catch (error) {
+		console.log(error);
 	}
 }
 
@@ -137,13 +160,17 @@ export default function HomeScreen() {
 					justifyContent: "space-around",
 				}}
 			>
-				<Text>Your Expo push token: {expoPushToken}</Text>
+				<Text style={{ color: "white" }}>
+					Your Expo push token: {expoPushToken}
+				</Text>
 				<View style={{ alignItems: "center", justifyContent: "center" }}>
-					<Text>
+					<Text style={{ color: "white" }}>
 						Title: {notification && notification.request.content.title}{" "}
 					</Text>
-					<Text>Body: {notification && notification.request.content.body}</Text>
-					<Text>
+					<Text style={{ color: "white" }}>
+						Body: {notification && notification.request.content.body}
+					</Text>
+					<Text style={{ color: "white" }}>
 						Data:{" "}
 						{notification && JSON.stringify(notification.request.content.data)}
 					</Text>
@@ -152,6 +179,12 @@ export default function HomeScreen() {
 					title="Press to Send Notification"
 					onPress={async () => {
 						await sendPushNotification(expoPushToken);
+					}}
+				/>
+				<Button
+					title="Press to Send Notification"
+					onPress={async () => {
+						await buttonSuccessNotification();
 					}}
 				/>
 			</View>
